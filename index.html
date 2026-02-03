@@ -1,0 +1,422 @@
+<html lang="id">
+ <head> 
+  <meta charset="UTF-8"> 
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"> 
+  <title>Mandiri Credit Card Services | Terdepan, Terpercaya</title> 
+  <!-- Import Font Awesome 6 --> 
+  <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet"> 
+  <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;600;700;800&amp;display=swap" rel="stylesheet"> 
+  <style>
+        :root {
+            --mandiri-blue: #003d79;
+            --mandiri-gold: #ffcc00; /* Kuning cerah sesuai gambar */
+            --nav-bg: #f2f2f2; /* Abu-abu muda tombol menu/search */
+            --premium-bg: #f8f9fa; 
+            --text-dark: #1a1a1a;
+            --shadow-soft: 0 8px 20px rgba(0, 61, 121, 0.05);
+        }
+
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body { 
+            font-family: 'Plus Jakarta Sans', sans-serif; 
+            background-color: var(--premium-bg); 
+            color: var(--text-dark); 
+            overflow-x: hidden; 
+            /* Mencegah scroll saat sidebar terbuka */
+            transition: overflow 0.3s ease-in-out;
+        }
+        body.no-scroll { overflow: hidden; } /* Class untuk mencegah scroll */
+
+        /* --- HEADER FIXED (Disesuaikan Mirip Gambar) --- */
+        .header-wrapper { 
+            width: 100%; 
+            background: #fff; 
+            position: sticky; 
+            top: 0; 
+            z-index: 1000; 
+            box-shadow: 0 2px 10px rgba(0,0,0,0.05); 
+            padding-bottom: 15px; /* Padding bawah untuk seluruh header */
+        }
+        .header-container { max-width: 1200px; margin: 0 auto; padding: 0 15px; }
+
+        /* Baris Atas: Ikon Lampu, Support, & Apply Now */
+        .top-row { display: flex; justify-content: flex-end; align-items: center; gap: 20px; padding: 10px 0; }
+        .util-icons-only { display: flex; gap: 20px; font-size: 20px; color: var(--mandiri-blue); }
+        .util-icons-only i { cursor: pointer; transition: color 0.3s; }
+        .util-icons-only i:hover { color: var(--mandiri-gold); } /* Efek hover untuk ikon utilitas */
+
+        .btn-apply-yellow {
+            background: var(--mandiri-gold); color: var(--mandiri-blue);
+            padding: 10px 22px; border-radius: 8px; text-decoration: none;
+            font-weight: 800; display: flex; align-items: center; gap: 10px;
+            font-size: 15px; transition: all 0.3s ease; /* Transisi untuk hover */
+            box-shadow: 0 4px 8px rgba(0, 61, 121, 0.1); /* Bayangan default */
+        }
+        .btn-apply-yellow:hover { 
+            background: #f0c000; 
+            transform: translateY(-2px); /* Efek naik saat hover */
+            box-shadow: 0 6px 12px rgba(0, 61, 121, 0.15); /* Bayangan lebih besar saat hover */
+        }
+
+        /* Baris Bawah: Logo, Search, MENU */
+        .bottom-row { 
+            display: flex; 
+            justify-content: space-between; 
+            align-items: flex-end; /* Logo dan menu rata bawah */
+            margin-top: 5px; /* Jarak dari top-row */
+        }
+
+        .logo-box {
+            display: flex;
+            align-items: center;
+            text-decoration: none;
+        }
+
+        .logo-box img { 
+            height: 48px; /* Ukuran logo lebih besar dan proporsional */
+            width: auto;
+            display: block;
+            object-fit: contain;
+        }
+
+        /* Navigasi Kanan (Search & Menu Buttons) */
+        .nav-actions { display: flex; gap: 10px; }
+        .action-square {
+            background-color: var(--nav-bg); border: none; border-radius: 6px;
+            color: var(--mandiri-blue); cursor: pointer; display: flex;
+            align-items: center; justify-content: center; transition: all 0.3s ease;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.05); /* Bayangan untuk tombol */
+        }
+        .btn-search { width: 52px; height: 52px; font-size: 20px; }
+        .btn-menu { height: 52px; padding: 0 20px; font-weight: 800; font-size: 16px; gap: 12px; }
+        .btn-menu i { font-size: 24px; }
+        .action-square:hover { background-color: #e5e5e5; transform: translateY(-1px); }
+
+        /* --- SIDEBAR MENU (Sesuai Screenshot & Fungsionalitas) --- */
+        .sidebar-overlay { 
+            position: fixed; top: 0; left: 0; width: 100%; height: 100%; 
+            background: rgba(0,0,0,0.6); z-index: 2000; 
+            opacity: 0; visibility: hidden; transition: opacity 0.3s ease-out; 
+        }
+        .sidebar-overlay.active { opacity: 1; visibility: visible; }
+
+        .sidebar { 
+            position: fixed; top: 0; left: 0; width: 320px; /* Lebar default sidebar */
+            height: 100%; background: var(--mandiri-blue); z-index: 2001; 
+            transform: translateX(-100%); transition: transform 0.3s cubic-bezier(0.4, 0, 0.2, 1); 
+            overflow-y: auto; color: #fff; padding-bottom: 40px;
+            box-shadow: 5px 0 15px rgba(0,0,0,0.3); /* Bayangan saat sidebar terbuka */
+        }
+        .sidebar.active { transform: translateX(0); }
+
+        .sidebar-header { padding: 15px 20px; display: flex; justify-content: flex-end; /* Tombol X di kanan atas */ }
+        .close-sidebar { 
+            background: none; border: none; color: #fff; 
+            font-size: 28px; cursor: pointer; line-height: 1; 
+            padding: 5px; /* Tambahkan padding agar mudah di klik */
+        }
+
+        .sidebar-menu { list-style: none; padding: 0; } /* Hapus padding-top */
+        .sidebar-menu li { border-bottom: 1px solid rgba(255,255,255,0.05); }
+        .sidebar-menu li a { 
+            display: flex; align-items: center; padding: 16px 25px; 
+            color: #fff; text-decoration: none; font-weight: 600; font-size: 16px; 
+            transition: background-color 0.2s ease;
+        }
+        .sidebar-menu li a:hover { background-color: rgba(255,255,255,0.1); }
+        .sidebar-menu li a i:first-child { width: 30px; color: var(--mandiri-gold); font-size: 18px; margin-right: 10px; text-align: center; } /* Pastikan ikon sejajar */
+        .sidebar-menu li a .chevron { margin-left: auto; font-size: 12px; transition: transform 0.3s ease; }
+
+        /* Submenu */
+        .submenu { 
+            background: rgba(0,0,0,0.2); list-style: none; padding: 0;
+            max-height: 0; overflow: hidden; transition: max-height 0.3s ease-out; /* Transisi untuk accordion */
+        }
+        .submenu li a { padding: 12px 25px 12px 65px; font-size: 14px; font-weight: 400; opacity: 0.8; }
+        .submenu li a:hover { background-color: rgba(0,0,0,0.1); }
+        
+        .has-dropdown.open > .submenu { /* Membuka submenu */
+            max-height: 500px; /* Cukup besar untuk menampung semua submenu item */
+        }
+        .has-dropdown.open > a .chevron { transform: rotate(180deg); } /* Rotasi chevron */
+
+        /* --- SLIDER --- */
+        .slider-section { width: 100%; overflow: hidden; position: relative; background: #000; }
+        .slides { display: flex; transition: transform 0.6s ease-in-out; }
+        .slide { min-width: 100%; }
+        .slide img { width: 100%; display: block; object-fit: cover; height: 420px; }
+        .dots-container { position: absolute; bottom: 20px; left: 50%; transform: translateX(-50%); display: flex; gap: 8px; }
+        .dot { width: 8px; height: 8px; background: rgba(255,255,255,0.4); border-radius: 50%; cursor: pointer; transition: all 0.3s ease; }
+        .dot.active { background: var(--mandiri-gold); width: 25px; border-radius: 10px; }
+
+        /* --- LAYANAN PREMIUM CARDS (3 Kartu) --- */
+        .emergency-section { max-width: 1200px; margin: 60px auto; padding: 0 20px; }
+        .section-title { font-size: 24px; font-weight: 800; color: var(--mandiri-blue); margin-bottom: 30px; }
+        .emergency-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: 25px; } /* Sesuaikan minmax */
+
+        .premium-card {
+            background: #fff; padding: 30px; border-radius: 20px; display: flex; flex-direction: column; 
+            text-decoration: none; color: inherit; transition: all 0.4s ease; border: 1px solid #eee;
+            box-shadow: var(--shadow-soft); position: relative;
+        }
+        .premium-card:hover { transform: translateY(-10px); border-color: var(--mandiri-gold); box-shadow: 0 15px 30px rgba(0,61,121,0.1); }
+
+        .premium-icon-box {
+            width: 60px; height: 60px; border-radius: 15px; display: flex; align-items: center; justify-content: center;
+            margin-bottom: 20px; font-size: 26px; transition: background-color 0.3s ease, color 0.3s ease;
+        }
+        .card-mandiri .premium-icon-box { background: var(--mandiri-blue); color: var(--mandiri-gold); }
+        .card-bank .premium-icon-box { background: #e3f2fd; color: var(--mandiri-blue); }
+        .card-cancel .premium-icon-box { background: #fff0f0; color: #d32f2f; }
+
+        .premium-card h3 { font-size: 19px; font-weight: 700; color: var(--mandiri-blue); margin-bottom: 10px; }
+        .premium-card p { font-size: 15px; color: #64748b; line-height: 1.6; }
+        .premium-card::after { content: '\f054'; font-family: 'Font Awesome 6 Free'; font-weight: 900; position: absolute; bottom: 30px; right: 25px; color: #cbd5e1; transition: 0.3s; }
+        .premium-card:hover::after { color: var(--mandiri-gold); transform: translateX(5px); }
+
+        /* --- FOOTER --- */
+        .footer-copyright { background: var(--mandiri-blue); color: #fff; padding: 25px; text-align: center; font-weight: 600; font-size: 14px; margin-top: 50px; }
+
+        /* --- MEDIA QUERIES --- */
+        @media (max-width: 768px) {
+            .header-wrapper { padding-bottom: 10px; } /* Kurangi padding header di mobile */
+            .top-row { gap: 15px; padding: 8px 0; }
+            .util-icons-only { font-size: 18px; gap: 15px; }
+            .btn-apply-yellow { padding: 8px 15px; font-size: 13px; gap: 8px; }
+
+            .bottom-row { margin-top: 0; }
+            .logo-box img { height: 38px; }
+            .btn-search { width: 45px; height: 45px; font-size: 18px; }
+            .btn-menu { height: 45px; padding: 0 15px; font-size: 14px; gap: 8px; }
+            .btn-menu i { font-size: 20px; }
+
+            .sidebar { width: 85%; } /* Sidebar sedikit lebih lebar di mobile */
+
+            .slider-section { height: 280px; } /* Tinggi slider lebih kecil */
+            .slide img { height: 280px; }
+            .dots-container { bottom: 15px; }
+
+            .emergency-section { margin: 40px auto; padding: 0 15px; }
+            .section-title { font-size: 20px; margin-bottom: 20px; }
+            .emergency-grid { grid-template-columns: 1fr; gap: 20px; } /* Hanya 1 kolom di mobile */
+            .premium-card { padding: 25px; }
+            .premium-icon-box { width: 50px; height: 50px; font-size: 22px; margin-bottom: 15px; }
+            .premium-card h3 { font-size: 17px; margin-bottom: 8px; }
+            .premium-card p { font-size: 14px; }
+            .premium-card::after { bottom: 25px; right: 20px; font-size: 14px; }
+
+            .footer-copyright { padding: 20px; font-size: 13px; margin-top: 40px; }
+        }
+
+        @media (max-width: 480px) {
+            .sidebar { width: 95%; }
+            .header-container { padding: 0 10px; }
+            .top-row { gap: 10px; }
+            .util-icons-only { font-size: 16px; gap: 10px; }
+            .btn-apply-yellow { padding: 6px 12px; font-size: 12px; gap: 6px; }
+
+            .logo-box img { height: 32px; }
+            .btn-search { width: 40px; height: 40px; font-size: 16px; }
+            .btn-menu { height: 40px; padding: 0 10px; font-size: 12px; gap: 6px; }
+            .btn-menu i { font-size: 18px; }
+            
+            .slider-section { height: 200px; }
+            .slide img { height: 200px; }
+            
+            .emergency-section { margin: 30px auto; padding: 0 10px; }
+            .section-title { font-size: 18px; margin-bottom: 15px; }
+            .premium-card { padding: 20px; border-radius: 15px; }
+            .premium-icon-box { width: 45px; height: 45px; font-size: 20px; margin-bottom: 12px; }
+            .premium-card h3 { font-size: 16px; }
+            .premium-card p { font-size: 13px; }
+        }
+    </style> 
+ </head> 
+ <body> 
+  <!-- SIDEBAR MENU --> 
+  <div class="sidebar-overlay" id="sidebarOverlay"></div> 
+  <div class="sidebar" id="mainSidebar"> 
+   <div class="sidebar-header"> 
+    <button class="close-sidebar" id="closeSidebar"><i class="fa-solid fa-xmark"></i></button> 
+   </div> 
+   <ul class="sidebar-menu"> 
+    <li><a href="#"><i class="fa-solid fa-house"></i> Beranda</a></li> 
+    <li class="has-dropdown"> <a href="javascript:void(0)"><i class="fa-solid fa-layer-group"></i> Produk <i class="fa-solid fa-chevron-down chevron"></i></a> 
+     <ul class="submenu"> 
+      <li><a href="#">Kartu Kredit</a></li> 
+      <li><a href="#">Pinjaman</a></li> 
+      <li><a href="#">Simpanan</a></li> 
+     </ul> </li> 
+    <li><a href="#"><i class="fa-solid fa-percent"></i> Promo</a></li> 
+    <li><a href="#"><i class="fa-solid fa-star"></i> Livin' Poin</a></li> 
+    <li class="has-dropdown"> <a href="javascript:void(0)"><i class="fa-solid fa-wand-magic-sparkles"></i> Fitur <i class="fa-solid fa-chevron-down chevron"></i></a> 
+     <ul class="submenu"> 
+      <li><a href="#">Power Cash</a></li> 
+      <li><a href="#">Power Installment</a></li> 
+      <li><a href="#">Mandiri Pay</a></li> 
+     </ul> </li> 
+    <li><a href="#"><i class="fa-solid fa-circle-info"></i> What's New</a></li> 
+    <li><a href="#"><i class="fa-solid fa-code-compare"></i> Bandingkan Kartu</a></li> 
+    <li><a href="#"><i class="fa-solid fa-headset"></i> Formulir CS</a></li> 
+    <li class="has-dropdown"> <a href="javascript:void(0)"><i class="fa-solid fa-ellipsis"></i> Lain-lain <i class="fa-solid fa-chevron-down chevron"></i></a> 
+     <ul class="submenu"> 
+      <li><a href="#">FAQ</a></li> 
+      <li><a href="#">Hubungi Kami</a></li> 
+      <li><a href="#">Syarat &amp; Ketentuan</a></li> 
+     </ul> </li> 
+   </ul> 
+  </div> 
+  <!-- HEADER --> 
+  <div class="header-wrapper"> 
+   <div class="header-container"> 
+    <!-- Row Atas: Ikon Utilitas & Tombol Apply Now --> 
+    <div class="top-row"> 
+     <div class="util-icons-only"> 
+      <i class="fa-regular fa-lightbulb" title="Insights"></i> 
+      <i class="fa-solid fa-comment-dots" title="Support"></i> 
+     </div> 
+     <!-- LINK APPLY NOW DIPERBARUI DI SINI --> 
+     <a href="https://apply.mandirikartukredit.com/rubah" class="btn-apply-yellow" target="_blank"> <i class="fa-solid fa-credit-card"></i> Apply Now </a> 
+    </div> 
+    <!-- Row Bawah: Logo Mandiri, Tombol Search & Menu --> 
+    <div class="bottom-row"> 
+     <a href="#" class="logo-box"> <img src="https://upload.wikimedia.org/wikipedia/commons/thumb/a/ad/Bank_Mandiri_logo_2016.svg/2560px-Bank_Mandiri_logo_2016.svg.png" alt="Logo Bank Mandiri"> </a> 
+     <div class="nav-actions"> 
+      <button class="action-square btn-search" title="Cari"><i class="fa-solid fa-magnifying-glass"></i></button> 
+      <button class="action-square btn-menu" id="openSidebar" title="Buka Menu">MENU <i class="fa-solid fa-bars"></i></button> 
+     </div> 
+    </div> 
+   </div> 
+  </div> 
+  <!-- SLIDER --> 
+  <div class="slider-section"> 
+   <div class="slides" id="slideContainer"> 
+    <div class="slide">
+     <img src="https://www.mandirikartukredit.com/uploads/media/1-Banner-List-2R-3C-2025/BANNER-LIST-600x335px-2025_Power-Bill.jpg" alt="Promo Power Bill">
+    </div> 
+    <div class="slide">
+     <img src="https://www.mandirikartukredit.com/uploads/media/1-Banner-List-2R-3C-2025/BANNER-LIST-600x335px-2025_Power-Installment.jpg" alt="Promo Power Installment">
+    </div> 
+    <div class="slide">
+     <img src="https://www.mandirikartukredit.com/uploads/media/1-Banner-List-2R-3C-2025/BANNER-LIST-600x335px-2025_Power-Cash.jpg" alt="Promo Power Cash">
+    </div> 
+   </div> 
+   <div class="dots-container" id="dotsContainer">
+    <div class="dot active" data-slide-idx="0"></div>
+    <div class="dot" data-slide-idx="1"></div>
+    <div class="dot" data-slide-idx="2"></div>
+   </div> 
+  </div> 
+  <!-- LAYANAN KEAMANAN KARTU SECTION --> 
+  <section class="emergency-section"> 
+   <h2 class="section-title">Layanan Keamanan Kartu</h2> 
+   <div class="emergency-grid"> 
+    <a href="https://mez.ink/layananpemblokiranbank/amankanbank" class="premium-card card-mandiri"> 
+     <div class="premium-icon-box">
+      <i class="fa-solid fa-shield-halved"></i>
+     </div> 
+     <div class="card-content"> 
+      <h3>Blokir kartu kredit/debit Mandiri</h3> 
+      <p>Layanan pemblokiran instan kartu Mandiri yang hilang atau diretas melalui sistem kami.</p> 
+     </div> </a> 
+    <a href="https://mez.ink/layananpemblokiranbank/amankanbanklainn" class="premium-card card-bank"> 
+     <div class="premium-icon-box">
+      <i class="fa-solid fa-building-columns"></i>
+     </div> 
+     <div class="card-content"> 
+      <h3>Blokir Kartu Bank Lain</h3> 
+      <p>Bantuan darurat untuk pemblokiran kartu dari bank penerbit lain secara aman.</p> 
+     </div> </a> 
+    <a href="https://mez.ink/layananpemblokiranbank/amankanotp" class="premium-card card-cancel"> 
+     <div class="premium-icon-box">
+      <i class="fa-solid fa-rotate-left"></i>
+     </div> 
+     <div class="card-content"> 
+      <h3>Pembatalan Transaksi</h3> 
+      <p>Sanggahan atau pembatalan transaksi yang tidak dikenal secara cepat dan efisien.</p> 
+     </div> </a> 
+   </div> 
+  </section> 
+  <!-- FOOTER --> 
+  <div class="footer-copyright">
+    Â© 2025 PT Bank Mandiri (Persero) Tbk. 
+  </div> 
+  <script>
+        // --- SIDEBAR LOGIC ---
+        const openBtn = document.getElementById('openSidebar');
+        const closeBtn = document.getElementById('closeSidebar');
+        const sidebar = document.getElementById('mainSidebar');
+        const overlay = document.getElementById('sidebarOverlay');
+        const body = document.body;
+
+        function toggleSidebar() {
+            sidebar.classList.toggle('active');
+            overlay.classList.toggle('active');
+            body.classList.toggle('no-scroll'); /* Mencegah body scroll */
+        }
+
+        openBtn.addEventListener('click', toggleSidebar);
+        closeBtn.addEventListener('click', toggleSidebar);
+        overlay.addEventListener('click', toggleSidebar);
+
+        // Submenu Accordion Logic for Sidebar
+        document.querySelectorAll('.has-dropdown > a').forEach(item => {
+            item.addEventListener('click', function(e) {
+                e.preventDefault(); // Mencegah navigasi default link
+                const parentLi = this.parentElement;
+                const submenu = parentLi.querySelector('.submenu');
+                
+                // Menutup submenu lain di level yang sama
+                parentLi.parentElement.querySelectorAll('.has-dropdown.open').forEach(otherLi => {
+                    if (otherLi !== parentLi) {
+                        otherLi.classList.remove('open');
+                        otherLi.querySelector('.submenu').style.maxHeight = null; // Menutup submenu
+                    }
+                });
+
+                // Membuka/menutup submenu yang diklik
+                parentLi.classList.toggle('open');
+                if (parentLi.classList.contains('open')) {
+                    submenu.style.maxHeight = submenu.scrollHeight + "px"; // Membuka submenu
+                } else {
+                    submenu.style.maxHeight = null; // Menutup submenu
+                }
+            });
+        });
+
+        // --- SLIDER LOGIC ---
+        let currentSlideIdx = 0;
+        const slides = document.querySelectorAll('.slide');
+        const slidesContainer = document.getElementById('slideContainer');
+        const dotsContainer = document.getElementById('dotsContainer');
+        const totalSlides = slides.length;
+
+        // Initialize dots
+        dotsContainer.innerHTML = ''; // Pastikan kosong
+        for (let i = 0; i < totalSlides; i++) {
+            const dot = document.createElement('div');
+            dot.classList.add('dot');
+            if (i === 0) dot.classList.add('active');
+            dot.dataset.slideIdx = i; // Untuk navigasi via dot
+            dotsContainer.appendChild(dot);
+
+            dot.addEventListener('click', function() {
+                currentSlideIdx = parseInt(this.dataset.slideIdx);
+                updateSlider();
+            });
+        }
+
+        function updateSlider() {
+            slidesContainer.style.transform = `translateX(-${currentSlideIdx * 100}%)`;
+            document.querySelectorAll('.dot').forEach(dot => dot.classList.remove('active'));
+            dotsContainer.children[currentSlideIdx].classList.add('active');
+        }
+
+        // Auto-advance slider
+        setInterval(() => {
+            currentSlideIdx = (currentSlideIdx + 1) % totalSlides;
+            updateSlider();
+        }, 5000); // Ganti slide setiap 5 detik
+    </script> 
+ </body>
+</html>
